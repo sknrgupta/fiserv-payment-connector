@@ -1,44 +1,46 @@
 package com.fiserv.payment.connector.model.arcsi.request;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class Amount {
 
-    private int cashback;
-    private int tax;
-    private int tip;
-    private int total;
+    private BigDecimal cashback;
+    private BigDecimal tax;
+    private BigDecimal tip;
+    private BigDecimal total;
 
-    public Integer getCashback() {
+    public BigDecimal getCashback() {
         return cashback;
     }
 
-    public void setCashback(Integer cashback) {
+    public void setCashback(BigDecimal cashback) {
         this.cashback = cashback;
     }
 
-    public Integer getTax() {
+    public BigDecimal getTax() {
         return tax;
     }
 
-    public void setTax(Integer tax) {
+    public void setTax(BigDecimal tax) {
         this.tax = tax;
     }
 
-    public Integer getTip() {
+    public BigDecimal getTip() {
         return tip;
     }
 
-    public void setTip(Integer tip) {
+    public void setTip(BigDecimal tip) {
         this.tip = tip;
     }
 
-    public Integer getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 

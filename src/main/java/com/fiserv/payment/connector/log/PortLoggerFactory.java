@@ -11,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PortLoggerFactory {
+    
+    private PortLoggerFactory() {
+        /* This utility class should not be instantiated */
+    }
 
     private static final ConcurrentHashMap<String, LoggersContainer> portLoggersMap = new ConcurrentHashMap<>();
     private static final String APP_LOG_PATTERN = "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{0}.%M - %msg%n";

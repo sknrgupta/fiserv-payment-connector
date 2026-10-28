@@ -1,5 +1,6 @@
 package com.fiserv.payment.connector.transaction.ingenico;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,22 +38,37 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
     private final IngenicoTransactionRequestResponseProcessor transactionProcessor;
 
     /**
+     * Constructor
+     * 
      * @param transactionProcessor
      */
     public IngenicoSaleTransactionHandler(IngenicoTransactionRequestResponseProcessor transactionProcessor) {
         this.transactionProcessor = transactionProcessor;
     }
 
+    /**
+     * Device type {@link DeviceType}
+     */
     @Override
     public DeviceType getDeviceType() {
         return DeviceType.INGENICO;
     }
 
+    /**
+     * TransactionType type {@link TransactionType}
+     */
     @Override
     public TransactionType getTransactionType() {
         return TransactionType.SALE;
     }
 
+    /**
+     * processing the request with series of steps.. generating requests, executing
+     * requests and converting back to response to EFT Link
+     * 
+     * @param opiTransactionRequest
+     * @param deviceEntry
+     */
     @Override
     public OPITransactionResponse process(OPITransactionRequest opiTransactionRequest, DeviceEntry deviceEntry) {
 
@@ -68,20 +84,20 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
             opiTransactionResponse = new OPITransactionResponse();
             opiTransactionResponse.setSequenceNo(opiTransactionRequest.getSequenceNo());
             opiTransactionResponse.setTransType(opiTransactionRequest.getTransType());
-            opiTransactionResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpi_retial_response_code());
+            opiTransactionResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpiRetailRespCode());
             opiTransactionResponse.setRespText("Transaction already in progress");
         } else if (saleResult.isTimedOut()) {
             opiTransactionResponse = new OPITransactionResponse();
             opiTransactionResponse.setSequenceNo(opiTransactionRequest.getSequenceNo());
             opiTransactionResponse.setTransType(opiTransactionRequest.getTransType());
-            opiTransactionResponse.setRespCode(IngenicoResponseEnum.CARD_READ_TIMEOUT.getOpi_retial_response_code());
+            opiTransactionResponse.setRespCode(IngenicoResponseEnum.CARD_READ_TIMEOUT.getOpiRetailRespCode());
             opiTransactionResponse.setRespText(IngenicoResponseEnum.CARD_READ_TIMEOUT.getResponseMessage());
         } else if (saleResult.getResponse() == null) {
             opiTransactionResponse = new OPITransactionResponse();
             opiTransactionResponse.setSequenceNo(opiTransactionRequest.getSequenceNo());
             opiTransactionResponse.setTransType(opiTransactionRequest.getTransType());
             opiTransactionResponse
-                    .setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpi_retial_response_code());
+                    .setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpiRetailRespCode());
             opiTransactionResponse.setRespText(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getResponseMessage());
         } else {
             opiTransactionResponse = convertResponse(saleResult.getResponse(), opiTransactionRequest);
@@ -92,6 +108,13 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
         return opiTransactionResponse;
     }
 
+    /**
+     * generating the ARC-SI Request from the EFTLink request
+     * 
+     * @param opiTransactionRequest
+     * @param deviceEntry
+     * @return {@link @Request}
+     */
     public Request generateRequest(OPITransactionRequest opiTransactionRequest, DeviceEntry deviceEntry) {
 
         Request ingenicoRequest = new Request();
@@ -101,7 +124,8 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
         Resource resource = new Resource();
 
         Amount amount = new Amount();
-        amount.setTotal(Integer.parseInt(opiTransactionRequest.getTransAmount()));
+       // amount.setTotal(Integer.parseInt(opiTransactionRequest.getTransAmount()));
+        amount.setTotal(new BigDecimal(opiTransactionRequest.getTransAmount()));
         resource.setAmount(amount);
 
         resource.setConfirm_amount(true); // pull from config file
@@ -132,6 +156,13 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
         return ingenicoRequest;
     }
 
+    /**
+     * Converting the ARC-SI response to EFTLink response
+     * 
+     * @param response
+     * @param opiTransactionRequest
+     * @return {link OPITransactionResponse}
+     */
     public OPITransactionResponse convertResponse(IngenicoResponse response,
             OPITransactionRequest opiTransactionRequest) {
 
@@ -168,7 +199,7 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
         if (processorCode != null) {
             mapped = IngenicoResponseEnum.getResponseCode(processorCode);
         }
-        opiResponse.setRespCode(mapped.getOpi_retial_response_code());
+        opiResponse.setRespCode(mapped.getOpiRetailRespCode());
         String deviceText = response.getEvent().getResource().getError_info().getText();
         if (deviceText != null && !deviceText.isBlank()) {
             opiResponse.setRespText(deviceText);
@@ -214,7 +245,7 @@ public class IngenicoSaleTransactionHandler implements TransactionHandler {
     }
 
     private void mapDefaultDecline(OPITransactionResponse opiResponse) {
-        opiResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpi_retial_response_code());
+        opiResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpiRetailRespCode());
         opiResponse.setRespText(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getResponseMessage());
     }
 
