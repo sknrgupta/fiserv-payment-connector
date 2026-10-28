@@ -3,6 +3,7 @@
  */
 package com.fiserv.payment.connector.transaction.ingenico;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -71,19 +72,19 @@ public class IngenicoRefundTransactionHandler implements TransactionHandler {
             opiTransactionResponse = new OPITransactionResponse();
             opiTransactionResponse.setSequenceNo(opiTransactionRequest.getSequenceNo());
             opiTransactionResponse.setTransType(opiTransactionRequest.getTransType());
-            opiTransactionResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpi_retial_response_code());
+            opiTransactionResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpiRetailRespCode());
             opiTransactionResponse.setRespText("Transaction already in progress");
         } else if (saleResult.isTimedOut()) {
             opiTransactionResponse = new OPITransactionResponse();
             opiTransactionResponse.setSequenceNo(opiTransactionRequest.getSequenceNo());
             opiTransactionResponse.setTransType(opiTransactionRequest.getTransType());
-            opiTransactionResponse.setRespCode(IngenicoResponseEnum.CARD_READ_TIMEOUT.getOpi_retial_response_code());
+            opiTransactionResponse.setRespCode(IngenicoResponseEnum.CARD_READ_TIMEOUT.getOpiRetailRespCode());
             opiTransactionResponse.setRespText(IngenicoResponseEnum.CARD_READ_TIMEOUT.getResponseMessage());
         } else if (saleResult.getResponse() == null) {
             opiTransactionResponse = new OPITransactionResponse();
             opiTransactionResponse.setSequenceNo(opiTransactionRequest.getSequenceNo());
             opiTransactionResponse.setTransType(opiTransactionRequest.getTransType());
-            opiTransactionResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpi_retial_response_code());
+            opiTransactionResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpiRetailRespCode());
             opiTransactionResponse.setRespText(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getResponseMessage());
         } else {
             opiTransactionResponse = convertResponse(saleResult.getResponse(), opiTransactionRequest);
@@ -101,7 +102,8 @@ public class IngenicoRefundTransactionHandler implements TransactionHandler {
         Resource resource = new Resource();
  
         Amount amount = new Amount();
-        amount.setTotal(Integer.parseInt(opiTransactionRequest.getTransAmount()));
+        //amount.setTotal(Integer.parseInt(opiTransactionRequest.getTransAmount()));
+        amount.setTotal(new BigDecimal(opiTransactionRequest.getTransAmount()));
         resource.setAmount(amount);
  
         resource.setConfirm_amount(false);
@@ -135,56 +137,6 @@ public class IngenicoRefundTransactionHandler implements TransactionHandler {
         return ingenicoRefundRequest;
     }
 
-//    private Request generateRequest(OPITransactionRequest opiTransactionRequest, DeviceEntry deviceEntry) {
-//        Request ingenicoRefundRequest = new Request();
-//        ingenicoRefundRequest.setFlow_id(UUID.randomUUID().toString().replace("-", ""));
-//        ingenicoRefundRequest.setEndpoint(deviceEntry.getEndPointUrl());
-//
-//        Resource resource = new Resource();
-//
-//        Amount amount = new Amount();
-//        amount.setTotal(Integer.parseInt(opiTransactionRequest.getTransAmount()));
-//        resource.setAmount(amount);
-//
-//        resource.setConfirm_amount(true);
-//        resource.setDisplay_txn_result(true);
-//        resource.setManual_entry(false);
-//        
-//      //If Original RRN is present so this is Referenced Return if not this flow is not working going to blind return. 
-//        if(opiTransactionRequest.getOriginalRRN()!=null)
-//        {
-//            Original original=new Original();
-//            if(original.getHost()==null)
-//            {
-//                Host host=new Host();
-//                host.setTxn_id(opiTransactionRequest.getOriginalRRN());
-//                original.setHost(host);
-//            }
-//            original.setTxn_type(TransactionType.SALE.getTransactionTypeARCSI());
-//            resource.setOriginal(original);
-//        }
-//
-//        List<String> payment_type = new ArrayList<String>();
-//        payment_type.add("credit");
-//        /* payment_type.add("debit"); */
-//        resource.setPaymentType(payment_type);
-//
-//        List<String> readers = new ArrayList<String>();
-//        resource.setReaders(readers);
-//        readers.add("contactless");
-//        readers.add("msr");
-//        readers.add("smartcard");
-//
-//        resource.setReturn_to_idle(true);
-//        resource.setToken_request(true);
-//        resource.setTxn_status_events(false);
-//        resource.setType(TransactionType.REFUND.getTransactionTypeARCSI());
-//
-//        ingenicoRefundRequest.setResource(resource);
-//
-//        return ingenicoRefundRequest;
-//    }
-
     private OPITransactionResponse convertResponse(IngenicoResponse response,
             OPITransactionRequest opiTransactionRequest) {
 
@@ -216,7 +168,7 @@ public class IngenicoRefundTransactionHandler implements TransactionHandler {
         if (processorCode != null) {
             mapped = IngenicoResponseEnum.getResponseCode(processorCode);
         }
-        opiResponse.setRespCode(mapped.getOpi_retial_response_code());
+        opiResponse.setRespCode(mapped.getOpiRetailRespCode());
         String deviceText = response.getEvent().getResource().getError_info().getText();
         if (deviceText != null && !deviceText.isBlank()) {
             opiResponse.setRespText(deviceText);
@@ -257,7 +209,7 @@ public class IngenicoRefundTransactionHandler implements TransactionHandler {
     }
 
     private void mapDefaultDecline(OPITransactionResponse opiResponse) {
-        opiResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpi_retial_response_code());
+        opiResponse.setRespCode(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getOpiRetailRespCode());
         opiResponse.setRespText(IngenicoResponseEnum.DEFAULT_ERROR_DECLINE.getResponseMessage());
     }
 

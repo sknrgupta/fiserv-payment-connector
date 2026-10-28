@@ -1,10 +1,5 @@
-/**
- * 
- */
 package com.fiserv.payment.connector.model.eftlink.request;
 
-//import jakarta.validation.constraints.NotBlank;
-//import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;

@@ -15,11 +15,21 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
+/**
+ * A Conversion Service. JAXB marshaller/unmarshaller String (XML form) to XML
+ * Object XML Object to String
+ */
 @Service
 public class RequestResponseXMLConverter {
 
     private static Logger logger = LoggerFactory.getLogger(RequestResponseXMLConverter.class);
 
+    /**
+     * Input as String and then convert it to POJO xml annotations
+     * 
+     * @param xmlString
+     * @return {@link OPITransactionRequest}
+     */
     public OPITransactionRequest convertPlainTextRequestToOPITransactionRequestObject(String xmlString) {
         JAXBContext jaxbContext;
         OPITransactionRequest opiTransactionRequest = null;
@@ -33,6 +43,12 @@ public class RequestResponseXMLConverter {
         return opiTransactionRequest;
     }
 
+    /**
+     * Input as POJO xml annotated response convert it to String.
+     * 
+     * @param opiTransactionResponse
+     * @return {@link String} string representation XML.
+     */
     public String convertTransactionResponseObjectToPlainTextResponse(OPITransactionResponse opiTransactionResponse) {
         JAXBContext jaxbContext;
         String responseString = "";
@@ -51,6 +67,12 @@ public class RequestResponseXMLConverter {
         return responseString;
     }
 
+    /**
+     * Input as POJO xml annotated request convert it to String.
+     * 
+     * @param opiTransactionRequest
+     * @return {@link String}
+     */
     public String convertTransactionRequestToPlainTextRequest(OPITransactionRequest opiTransactionRequest) {
         JAXBContext jaxbContext;
         String requestString = "";

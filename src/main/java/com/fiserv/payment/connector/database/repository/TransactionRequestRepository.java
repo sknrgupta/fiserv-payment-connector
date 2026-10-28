@@ -17,7 +17,7 @@ import com.fiserv.payment.connector.database.model.TransactionRequest;
 @Repository
 public interface TransactionRequestRepository extends JpaRepository<TransactionRequest, Long> {
 
-	public boolean existsByFlowid(String flowid);
+    public boolean existsByFlowid(String flowid);
 
     public List<TransactionRequest> findByFlowid(String flowid);
 }

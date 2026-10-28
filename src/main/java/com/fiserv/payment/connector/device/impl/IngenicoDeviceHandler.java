@@ -17,7 +17,8 @@ import com.fiserv.payment.connector.transaction.factory.ingenico.IngenicoTransac
 import com.fiserv.payment.connector.transaction.type.TransactionType;
 
 /**
- * 
+ * Component Device Handler. This will determine the transaction handlers to
+ * whihc the request is forwarded.
  */
 @Component
 public class IngenicoDeviceHandler implements DeviceHandler {
@@ -26,22 +27,40 @@ public class IngenicoDeviceHandler implements DeviceHandler {
 
     private final IngenicoTransactionHandlerFactory ingenicoTransactionHandlerFactory;
 
+    /**
+     * Constructor
+     * 
+     * @param ingenicoTransactionHandlerFactory
+     */
     public IngenicoDeviceHandler(IngenicoTransactionHandlerFactory ingenicoTransactionHandlerFactory) {
         this.ingenicoTransactionHandlerFactory = ingenicoTransactionHandlerFactory;
     }
 
+    /**
+     * Marking device type for which this handler is for.
+     * {@see DeviceHandlerFactory} checks this.
+     */
     @Override
     public DeviceType getDeviceType() {
         return DeviceType.INGENICO;
     }
 
+    /**
+     * Ingenico Handler Factory determines appropriate transaction handler for the
+     * incoming request transaction type to forward to.
+     * 
+     * @param deviceEntry
+     * @param transactionType
+     * @param opiTransactionRequest
+     * @return {@link OPITransactionResponse}
+     */
     @Override
     public OPITransactionResponse connect(DeviceEntry deviceEntry, TransactionType transactionType,
             OPITransactionRequest opiTransactionRequest) {
 
         TransactionHandler handler = ingenicoTransactionHandlerFactory.getTransactionHandler(transactionType);
 
-        logger.info("In IngenicoDeviceHandler : " + getDeviceType().getDeviceType() + " = "
+        logger.debug("In IngenicoDeviceHandler : " + getDeviceType().getDeviceType() + " - "
                 + opiTransactionRequest.getTransType());
 
         return handler.process(opiTransactionRequest, deviceEntry);

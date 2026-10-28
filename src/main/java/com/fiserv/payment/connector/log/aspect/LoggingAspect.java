@@ -12,38 +12,35 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 
-	private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
-	@Around("""
-			execution(* com.fiserv.payment.connector.service.impl.OPITransactionServiceImpl.processRequest(..))
-			|| execution(* com.fiserv.payment.connector.service.impl.DeviceServiceImpl.processDeviceRequest(..))
-			|| execution(* com.fiserv.payment.connector.device.impl.*DeviceHandler.connect(..))
-			""")
-	public Object logMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("""
+            execution(* com.fiserv.payment.connector.service.impl.OPITransactionServiceImpl.processRequest(..))
+            || execution(* com.fiserv.payment.connector.service.impl.DeviceServiceImpl.processDeviceRequest(..))
+            || execution(* com.fiserv.payment.connector.device.impl.*DeviceHandler.connect(..))
+            """)
+    public Object logMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {
 
-		String methodName = joinPoint.getSignature().getName();
-		String className = joinPoint.getSignature().getDeclaringType().getSimpleName();
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getSignature().getDeclaringType().getSimpleName();
 
-		long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
 
-		log.info("START | {}.{}", className, methodName);
+        log.info("START | {}.{}", className, methodName);
 
-		try {
-			Object result = joinPoint.proceed();
+        try {
+            Object result = joinPoint.proceed();
 
-			long duration = System.currentTimeMillis() - startTime;
+            long duration = System.currentTimeMillis() - startTime;
 
-			log.info("SUCCESS | {} | durationMs={}", methodName, duration);
+            log.info("SUCCESS | {} | durationMs={}", methodName, duration);
 
-			return result;
+            return result;
 
-		} catch (Exception | Error ex) {
-			long duration = System.currentTimeMillis() - startTime;
-
-			log.error("FAILED | {} | durationMs={} | error={}", methodName, duration, ex.getClass().getSimpleName());
-
-			throw ex;
-		}
-	}
-
+        } catch (Exception | Error ex) {
+            long duration = System.currentTimeMillis() - startTime;
+            log.error("FAILED | {}.{} | durationMs={}", className, methodName, duration);
+            throw new RuntimeException("Failure in " + className + "." + methodName, ex);
+        }
+    }
 }

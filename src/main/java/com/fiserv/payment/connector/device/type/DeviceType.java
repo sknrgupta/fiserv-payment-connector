@@ -9,9 +9,7 @@ package com.fiserv.payment.connector.device.type;
 public enum DeviceType {
 
     // 1. Define constants with values passed to the constructor
-    INGENICO("INGENICO"),
-    VERIFONE("VERIFONE"),
-    PAX("PAX");
+    INGENICO("INGENICO");
 
     // 2. Define internal state fields
     private final String deviceType;

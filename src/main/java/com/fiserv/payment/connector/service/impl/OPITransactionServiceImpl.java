@@ -17,7 +17,9 @@ import com.fiserv.payment.connector.service.DeviceService;
 import com.fiserv.payment.connector.service.OPITransactionService;
 
 /**
- * 
+ * Service to process the incoming request Port determines the device the
+ * request will redirect to from the configuration and forward the request to
+ * device service
  */
 @Service
 public class OPITransactionServiceImpl implements OPITransactionService {
@@ -29,23 +31,28 @@ public class OPITransactionServiceImpl implements OPITransactionService {
 
     private final DeviceService deviceService;
 
+    /**
+     * Constructor
+     * 
+     * @param deviceService {@link DeviceService}
+     */
     public OPITransactionServiceImpl(DeviceService deviceService) {
         this.deviceService = deviceService;
     }
 
+    /**
+     * First step in processing the request determine the device to redirect the
+     * request to
+     */
     @Override
     public OPITransactionResponse processRequest(OPITransactionRequest opiTransactionRequest, String port) {
 
-        for (DeviceEntry deviceEntry : deviceConfigurationService.getAllDevices()) {
-            logger.info(deviceEntry.getPort() + " - " + deviceEntry.getDeviceType() + " - " + deviceEntry.getTimeoutMs()
-                    + " - " + deviceEntry.getWebsocketUrl() + " - " + " - " + deviceEntry.getEndPointUrl());
-        }
-
-        logger.info("\n\n\n");
+        // determining the device configuration from port
         DeviceEntry deviceEntry = deviceConfigurationService.getDeviceByPort(Integer.valueOf(port));
         logger.info(deviceEntry.getPort() + " - " + deviceEntry.getDeviceType() + " - " + deviceEntry.getTimeoutMs()
                 + " - " + deviceEntry.getWebsocketUrl() + " - " + deviceEntry.getEndPointUrl());
 
+        // forwarded to device service ...
         OPITransactionResponse opiTransactionResponse = deviceService.processDeviceRequest(deviceEntry,
                 opiTransactionRequest);
 

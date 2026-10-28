@@ -10,34 +10,32 @@ public enum IngenicoResponseEnum {
 
     DEFAULT_ERROR_DECLINE("", "06", "Default Failure");
 
-    private String ingenico_processorResponse_code;
+    private String ingenicoProcessorRespCode;
 
-    private String opi_retial_response_code;
+    private String opiRetailRespCode;
 
     private String responseMessage;
 
-    private IngenicoResponseEnum(String processorCode, String opi_ResponseCode, String message) {
-
-        this.ingenico_processorResponse_code = processorCode;
-        this.opi_retial_response_code = opi_ResponseCode;
+    private IngenicoResponseEnum(String processorCode, String opiResponseCode, String message) {
+        this.ingenicoProcessorRespCode = processorCode;
+        this.opiRetailRespCode = opiResponseCode;
         this.responseMessage = message;
-
     }
 
-    public String getIngenico_processorResponse_code() {
-        return ingenico_processorResponse_code;
+    public String getIngenicoProcessorRespCode() {
+        return ingenicoProcessorRespCode;
     }
 
-    public void setIngenico_processorResponse_code(String ingenico_processorResponse_code) {
-        this.ingenico_processorResponse_code = ingenico_processorResponse_code;
+    public void setIngenicoProcessorRespCode(String ingProcessorRespcode) {
+        this.ingenicoProcessorRespCode = ingProcessorRespcode;
     }
 
-    public String getOpi_retial_response_code() {
-        return opi_retial_response_code;
+    public String getOpiRetailRespCode() {
+        return opiRetailRespCode;
     }
 
-    public void setOpi_retial_response_code(String opi_retial_response_code) {
-        this.opi_retial_response_code = opi_retial_response_code;
+    public void setOpiRetailRespCode(String opiRespCode) {
+        this.opiRetailRespCode = opiRespCode;
     }
 
     public String getResponseMessage() {
@@ -50,7 +48,7 @@ public enum IngenicoResponseEnum {
 
     public static IngenicoResponseEnum getResponseCode(String responseCode) {
         return Arrays.stream(IngenicoResponseEnum.values())
-                .filter(param -> param.getIngenico_processorResponse_code().equals(responseCode)).findFirst()
+                .filter(param -> param.getIngenicoProcessorRespCode().equals(responseCode)).findFirst()
                 .orElse(DEFAULT_ERROR_DECLINE);
     }
 }

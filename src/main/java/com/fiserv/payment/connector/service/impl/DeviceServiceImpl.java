@@ -16,7 +16,8 @@ import com.fiserv.payment.connector.service.DeviceService;
 import com.fiserv.payment.connector.transaction.type.TransactionType;
 
 /**
- * 
+ * Service to process the incoming request to appropriate device handler and
+ * request will redirect
  */
 @Service
 public class DeviceServiceImpl implements DeviceService {
@@ -25,10 +26,20 @@ public class DeviceServiceImpl implements DeviceService {
 
     private final DeviceHandlerFactory deviceHandlerFactory;
 
+    /**
+     * Constructor
+     * 
+     * @param deviceHandlerFactory
+     */
     public DeviceServiceImpl(DeviceHandlerFactory deviceHandlerFactory) {
         this.deviceHandlerFactory = deviceHandlerFactory;
     }
 
+    /**
+     * Determining the appropriate device handler by factory pattern
+     * ({@link DeviceHandlerFactory}), transaction type and forwarding the request
+     * to the appropriate transaction handler
+     */
     @Override
     public OPITransactionResponse processDeviceRequest(DeviceEntry deviceEntry,
             OPITransactionRequest opiTransactionRequest) {
