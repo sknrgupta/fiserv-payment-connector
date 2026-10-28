@@ -1,0 +1,38 @@
+# Primary Standard Spring Boot Port - to correctly format use - https://yaml-indent.com/repair.html - 
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: file:./connectorkeystore.p12
+    key-store-password: skillnet
+    key-password: skillnet
+    key-store-type: PKCS12
+    key-alias: connector
+    enabled-protocols:
+      - TLSv1.2
+      - TLSv1.3
+connector:
+  server:
+    additional-https-ports:
+      - port: 8081
+        device-type: INGENICO
+        timeout-ms: 30000
+        # overall cap phase timeout, still uses timeout-ms
+        max-sale-lifecycle-ms: 180000
+        websocket-url: ws://localhost:50000/
+        end-point-url: /asi/v1/transaction
+      - port: 8082
+        device-type: VERIFONE
+        timeout-ms: 20000
+        websocket-url: ws://localhost:50000/
+        end-point-url: /asi/v1/transaction
+      - port: 8083
+        device-type: PAX
+        timeout-ms: 10000
+        websocket-url: ws://localhost:50000/
+        end-point-url: /asi/v1/transaction
+      - port: 8084
+        device-type: INGENICO
+        timeout-ms: 90000
+        websocket-url: ws://localhost:50000/
+        end-point-url: /asi/v1/transaction

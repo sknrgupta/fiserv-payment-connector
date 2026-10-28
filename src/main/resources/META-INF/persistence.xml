@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee"
+             xmlns:xsi="http://w3.org"
+             xsi:schemaLocation="https://jakarta.ee https://jakarta.ee/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="sqlite-pu" transaction-type="RESOURCE_LOCAL">
+        <!-- Provider -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <properties>
+            <!-- JDBC Database Connection Settings -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.xerial.sqlite.JDBC"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:mydb.db"/>
+
+            <!-- Option 1: SQLite Dialect Mapping -->
+            <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
+
+            <!-- Optional: Database Schema Behavior -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

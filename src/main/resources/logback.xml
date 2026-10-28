@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Standard Root Base File Appender for Central System Context Logs -->
+	<appender name="FileAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>./logs/paymentconnector.log</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level
+				%logger{0}.%M - %msg%n</Pattern>
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>
+				./logs/archived/paymentconnector.log_%d{dd-MM-yyyy}.%i.log</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
+			<maxHistory>20</maxHistory>
+			<totalSizeCap>10MB</totalSizeCap>
+		</rollingPolicy>
+	</appender>
+
+	<!-- Standard Root Base File Appender for Central Request/Response Streams -->
+	<appender name="RequestResponseFileAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>./logs/payment-req-res.log</file>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %-5level %logger{0}.%M - %msg%n</Pattern>
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>
+				./logs/archived/btc-req-res.log_%d{dd-MM-yyyy}.%i.log</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
+			<maxHistory>20</maxHistory>
+			<totalSizeCap>200MB</totalSizeCap>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+		</rollingPolicy>
+	</appender>
+
+	<!-- Only route to Console at startup; zero file appenders declared here -->
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FileAppender" />
+	</root>
+
+</configuration>
